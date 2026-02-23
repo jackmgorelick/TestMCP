@@ -19,11 +19,13 @@ pip install anthropic
 
 ## Configure API Key
 
+Either export it in your terminal:
+
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
-Or create a `.env` file two directories above the script:
+Or create a `.env` file in the project root (same folder as `research_agent.py`):
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
