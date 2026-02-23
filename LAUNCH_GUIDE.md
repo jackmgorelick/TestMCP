@@ -1,47 +1,67 @@
 # Launch Guide: Weather Agent MCP
 
-A simple MCP that fetches weather for a city using Claude.
+An MCP server that exposes a `get_weather` tool to fetch weather for any city.
 
 ## Prerequisites
 
 - Python 3.9+
-- An [Anthropic API key](https://console.anthropic.com/)
 
 ## Setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/jackmgorelick/TestMCP.git
 cd TestMCP
 python -m venv venv
 source venv/bin/activate   # macOS/Linux
-pip install anthropic
+pip install mcp
 ```
 
-## Configure API Key
-
-Either export it in your terminal:
-
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
-```
-
-Or create a `.env` file in the project root (same folder as `research_agent.py`):
-
-```
-ANTHROPIC_API_KEY=sk-ant-...
-```
-
-## Run
+## Run the server
 
 ```bash
 python research_agent.py
 ```
 
-This will fetch the weather for New York and print the result. Edit the question in `main()` to query any city.
+The server starts on stdio and waits for MCP client connections.
+
+## Add to Claude Desktop
+
+Add this to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "weather-agent": {
+      "command": "python",
+      "args": ["/absolute/path/to/TestMCP/research_agent.py"]
+    }
+  }
+}
+```
+
+Replace `/absolute/path/to/` with the actual path, then restart Claude Desktop.
+
+## Add to Claude Code
+
+```bash
+claude mcp add weather-agent python /absolute/path/to/TestMCP/research_agent.py
+```
+
+## Available Tools
+
+| Tool | Description |
+|---|---|
+| `get_weather` | Returns temperature, condition, and humidity for a given city |
+
+## Test with MCP Inspector
+
+```bash
+npx @modelcontextprotocol/inspector python research_agent.py
+```
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| `ModuleNotFoundError: anthropic` | Run `pip install anthropic` |
-| `AuthenticationError` | Check that `ANTHROPIC_API_KEY` is set |
+| `ModuleNotFoundError: mcp` | Run `pip install mcp` |
+| Server not showing in Claude | Check the config path and restart the client |
